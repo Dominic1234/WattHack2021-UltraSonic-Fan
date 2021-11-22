@@ -4,6 +4,8 @@
 #define LEFT_ANGLE 0
 #define REST_ANGLE 90
 
+#define MAX_DIST 100
+
 //
 ////Servo declarationss
   int pos = 0;
@@ -83,12 +85,12 @@ void loop() {
   my_indx = 0;
 
   for(int i = 0; i < 3; i++){
-    if ( distance_arr[i] < min_val && distance_arr[i] < 100){
+    if ( distance_arr[i] < min_val && distance_arr[i] < MAX_DIST){
       min_val = distance_arr[i];
       my_indx = i;
     }
   }
-  if(min_val<100){
+  if(min_val < MAX_DIST){
     
 ang = servo_9.read();
 if( my_indx == 0){          //right
@@ -120,7 +122,7 @@ if( my_indx == 0){          //right
 
 }else{
   servo_9.write(ang);
-  //add blinking lights
+  //to add blinking lights if all sensors out of maximum set range
   }
 
   //Servo Code
