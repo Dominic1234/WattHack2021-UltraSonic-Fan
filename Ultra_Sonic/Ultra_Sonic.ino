@@ -13,7 +13,7 @@
 #define MIDDLE_LED 5
 
 //
-////Servo declarationss
+////Servo declarations
   int pos = 0;
 //
  Servo servo_9;
@@ -93,9 +93,6 @@ void setup() {
 }
 void loop() {
   
-  //Set LCD cursor to the next line
-  lcd.setCursor(0, 1);
-  
   //US sensor code
   // put your main code here, to run repeatedly:
   //meausre ping time in cm
@@ -119,14 +116,14 @@ void loop() {
 
   if(min_val < MAX_DIST){
     ang = servo_9.read();
-    if( my_indx == 0){          //center
+    if( my_indx == 0){                          //center
         lcd.clear();
         lcd.print("centering");
         digitalWrite(LEFT_LED, LOW);
         digitalWrite(RIGHT_LED, LOW);
         digitalWrite(MIDDLE_LED, HIGH);
         calc_angle(ang, REST_ANGLE);
-    }  else if  (my_indx == 1){ //right
+    }  else if  (my_indx == 1){                 //right
         lcd.clear();
         lcd.print("moving right");
         digitalWrite(LEFT_LED, LOW);
@@ -141,26 +138,6 @@ void loop() {
       digitalWrite(MIDDLE_LED, LOW);
       calc_angle(ang, LEFT_ANGLE);
     }
-    
-    //if( my_indx == 0){
-    //  servo_9.write(90);
-    //}  else if  (my_indx == 1){
-    //  servo_9.write(0);
-    //}else {
-    //  servo_9.write(170); 
-    //}
-    
-     //(my_indx == 2)
-      
-        //Serial.print("min value is");
-        //Serial.println(min_val);
-    //    Serial.print("minimum index is");
-    //    Serial.println(my_indx);
-        
-      
-      //convert to inches 
-      //inches = (cm/2.54);
-    
     }else{
       lcd.print("cannot find");
       servo_9.write(ang);
