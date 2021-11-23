@@ -1,4 +1,5 @@
 #include <Servo.h>
+#include <LiquidCrystal.h>
 
 #define RIGHT_ANGLE 170
 #define LEFT_ANGLE 0
@@ -11,6 +12,11 @@
   int pos = 0;
 //
  Servo servo_9;
+
+ // initialize the library by associating any needed LCD interface pin
+// with the arduino pin number it is connected to
+const int rs = 13, en = 10, d4 = A2, d5 = A3, d6 = A4, d7 = A5;
+LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
 
 //US sensor declarations
 int inches = 0;
@@ -41,33 +47,46 @@ long readUltrasonicDistance(int triggerPin, int echoPin)
 
 void calc_angle(double curr_ang, double new_ang) { 
   if(curr_ang > new_ang) {
-    Serial.println("left");
+    Serial.println("moving right");
+    lcd.print("moving right");
     for(double i = curr_ang; i > new_ang; i--) {
       servo_9.write(i);
       delay(25);
     }
   }
   else if(curr_ang < new_ang){
-    Serial.println("left");
+    Serial.println("moving left");
+    lcd.print("moving left");
     for(double i = curr_ang; i < new_ang; i++) {
       servo_9.write(i);
       delay(25);
     }
   }
   else {
+    lcd.print("at rest");
     return;
   }
 }
 
 void setup() {
-  // put your setup code here, to run once:
-
   Serial.begin(9600);
-//
+  
+  //begin motor setup
   servo_9.attach(9);
+  
+  //begin LCD setup
+  // set up the LCD's number of columns and rows:
+  lcd.begin(16, 2);
+  // Print a message to the LCD.
+  lcd.print("hello, world!");
+  lcd.setCursor(0, 1);
+  lcd.print(millis() / 1000);
  
 }
 void loop() {
+  
+  //Set LCD cursor to the next line
+  lcd.setCursor(0, 1);
   
   //US sensor code
   // put your main code here, to run repeatedly:
@@ -121,6 +140,7 @@ if( my_indx == 0){          //right
   //inches = (cm/2.54);
 
 }else{
+  lcd.print("cannot find you!");
   servo_9.write(ang);
   //to add blinking lights if all sensors out of maximum set range
   }
