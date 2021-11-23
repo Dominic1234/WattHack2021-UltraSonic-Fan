@@ -1,8 +1,8 @@
 #include <Servo.h>
 #include <LiquidCrystal.h>
 
-#define LEFT_ANGLE 180
-#define RIGHT_ANGLE 0
+#define LEFT_ANGLE 145
+#define RIGHT_ANGLE 35
 #define REST_ANGLE 90
 
 #define MIN_DIST 2
@@ -55,14 +55,14 @@ void calc_angle(double curr_ang, double new_ang) {
     Serial.println("moving right");
     for(double i = curr_ang; i > new_ang; i--) {
       servo_9.write(i);
-      delay(25);
+      delay(12);
     }
   }
   else if(curr_ang < new_ang){
     Serial.println("moving left");
     for(double i = curr_ang; i < new_ang; i++) {
       servo_9.write(i);
-      delay(25);
+      delay(12);
     }
   }
   else {
@@ -75,6 +75,7 @@ void setup() {
   
   //begin motor setup
   servo_9.attach(9);
+  servo_9.write(REST_ANGLE);
   
   //begin LCD setup
   // set up the LCD's number of columns and rows:
@@ -83,6 +84,11 @@ void setup() {
   lcd.print("hello, world!");
   lcd.setCursor(0, 1);
   lcd.print(millis() / 1000);
+
+  //setup LED
+  pinMode(LEFT_LED, OUTPUT);
+  pinMode(RIGHT_LED, OUTPUT);
+  pinMode(MIDDLE_LED, OUTPUT);
  
 }
 void loop() {
@@ -111,21 +117,28 @@ void loop() {
       }
   }
 
-  
   if(min_val < MAX_DIST){
-    
     ang = servo_9.read();
     if( my_indx == 0){          //center
         lcd.clear();
         lcd.print("centering");
-      calc_angle(ang, REST_ANGLE);
+        digitalWrite(LEFT_LED, LOW);
+        digitalWrite(RIGHT_LED, LOW);
+        digitalWrite(MIDDLE_LED, HIGH);
+        calc_angle(ang, REST_ANGLE);
     }  else if  (my_indx == 1){ //right
         lcd.clear();
         lcd.print("moving right");
-      calc_angle(ang, RIGHT_ANGLE);
-    }else {                     //left
+        digitalWrite(LEFT_LED, LOW);
+        digitalWrite(RIGHT_LED, HIGH);
+        digitalWrite(MIDDLE_LED, LOW);
+        calc_angle(ang, RIGHT_ANGLE);
+    }else if (my_indx == 2){                     //left
       lcd.clear();
       lcd.print("moving left");
+      digitalWrite(LEFT_LED, HIGH);
+      digitalWrite(RIGHT_LED, LOW);
+      digitalWrite(MIDDLE_LED, LOW);
       calc_angle(ang, LEFT_ANGLE);
     }
     
@@ -149,19 +162,17 @@ void loop() {
       //inches = (cm/2.54);
     
     }else{
-      lcd.print("cannot find you!");
+      lcd.print("cannot find");
       servo_9.write(ang);
       //to add blinking lights if all sensors out of maximum set range
       }
     
       //Servo Code
-    
-      Serial.print(cm_1);
-      Serial.print(",");
       Serial.print(cm_2);
       Serial.print(",");
-      Serial.println(cm_3);
+      Serial.print(cm_1);
+      Serial.print(",");
       Serial.println(cm_3);
     
-      delay(500);
+      delay(250);
 }
